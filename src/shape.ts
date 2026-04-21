@@ -1,6 +1,6 @@
 // DefineShape parsing + bitmap-fill shape construction (ported from migrate_loading_screen.py).
 //
-// The background shape in a Cottage Loading Screen GFX is DefineShape(shape_id=6).
+// The background shape in a Sims 4 loading-screen GFX is DefineShape(shape_id=6).
 // The empty template gives this shape a solid-color placeholder fill; we replace it
 // with a repeating-bitmap fill (fill type 0x40) pointing at the newly-injected bitmap.
 
