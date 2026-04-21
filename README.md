@@ -10,8 +10,8 @@ Licensed under the [MIT License](LICENSE).
 ## Develop
 
 ```
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Open the printed localhost URL, drop `.package` files onto the drop zone.
@@ -21,11 +21,11 @@ supply one.
 ## Build
 
 ```
-npm run build
+bun run build
 ```
 
 Static output lands in `dist/`. The included GitHub Actions workflow publishes
-`dist/` to GitHub Pages on every push to `main` that touches this directory.
+`dist/` to GitHub Pages on every push to `main`.
 
 ## How it works
 
