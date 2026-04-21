@@ -2,7 +2,7 @@
   "name": "ts4-toolbox",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Browser-based bulk migrator for Sims 4 Cottage Loading Screen .package files. Uses @s4tk/models for DBPF I/O.",
+  "description": "Fixes the spinning-plumbob-forever bug from outdated Sims 4 loading-screen .package mods. Browser-based bulk migrator; uses @s4tk/models for DBPF I/O.",
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.9",
     "vite-plugin-node-polyfills": "^0.26.0"

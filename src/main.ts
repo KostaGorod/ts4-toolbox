@@ -1,6 +1,13 @@
 import JSZip from "jszip";
 import { migratePackage } from "./migrate";
 
+const commitShaEl = document.getElementById("commit-sha");
+const commitLinkEl = document.getElementById("commit-link") as HTMLAnchorElement | null;
+if (commitShaEl) commitShaEl.textContent = __COMMIT_SHA__;
+if (commitLinkEl && __COMMIT_SHA_FULL__) {
+  commitLinkEl.href = `https://github.com/KostaGorod/ts4-toolbox/commit/${__COMMIT_SHA_FULL__}`;
+}
+
 const dropZone = document.getElementById("drop") as HTMLElement;
 const fileInput = document.getElementById("file-input") as HTMLInputElement;
 const pickButton = document.getElementById("pick") as HTMLButtonElement;

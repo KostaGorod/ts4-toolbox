@@ -3,16 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sims 4 Cottage Loading Screen Migrator</title>
+    <title>Sims 4 Loading Screen Migrator</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <main>
-      <h1>Sims 4 Cottage Loading Screen Migrator</h1>
+      <h1>Sims 4 Loading Screen Migrator</h1>
       <p class="sub">
-        Drop old <code>.package</code> files below. The migrator re-injects each package's
-        background bitmap into the current Sims 4 loading-screen GFX template and writes a
-        fresh DBPF v2.1 package via <a href="https://github.com/sims4toolkit/models" target="_blank" rel="noopener">@s4tk/models</a>.
+        Fixes the spinning-plumbob-forever bug caused by old custom
+        loading-screen <code>.package</code> files that don't match the current
+        game's format. Drop your old packages below and this tool rebuilds each
+        one against the current Sims 4 loading-screen template via
+        <a href="https://github.com/sims4toolkit/models" target="_blank" rel="noopener">@s4tk/models</a>
+        — no uploads, everything runs in your browser.
       </p>
 
       <section id="drop" class="drop">
@@ -41,6 +44,13 @@
         </div>
       </section>
     </main>
+    <footer class="site-footer">
+      <a id="repo-link" href="https://github.com/KostaGorod/ts4-toolbox" target="_blank" rel="noopener">GitHub</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <a id="star-link" href="https://github.com/KostaGorod/ts4-toolbox" target="_blank" rel="noopener" title="Star this project on GitHub">★ Star</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <span>build <a id="commit-link" href="https://github.com/KostaGorod/ts4-toolbox" target="_blank" rel="noopener"><code id="commit-sha">dev</code></a></span>
+    </footer>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

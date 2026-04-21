@@ -1,6 +1,14 @@
-# Sims 4 Cottage Loading Screen Migrator — Web
+# Sims 4 Loading Screen Migrator
 
-Browser-based bulk migrator for Sims 4 Cottage Loading Screen `.package` files.
+Fixes the **spinning-plumbob-forever bug** caused by old custom loading-screen
+`.package` files that were authored against an older Sims 4 GFX format. The
+current game silently rejects them, leaving you stuck on the loading screen.
+
+This tool rebuilds each old package against the current in-game loading-screen
+template so the plumbob actually stops spinning and the game loads.
+
+Hosted build: **https://kostagorod.github.io/ts4-toolbox/**
+
 Uses [`@s4tk/models`](https://github.com/sims4toolkit/models) for DBPF I/O. The
 Scaleform GFX manipulation lives here because S4TK treats GFX payloads as
 opaque.
