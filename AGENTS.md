@@ -24,7 +24,7 @@ If a tradeoff is required, choose correctness of the binary output over UI conve
 
 The codebase is intentionally small. Before adding a new module, check whether the logic belongs in one of the existing four:
 
-- `src/dbpf.ts` — DBPF v2.1 container reads/writes via `@s4tk/models`. This is the only file that should touch `@s4tk/models`.
+- `src/dbpf.ts` — DBPF v2.1 container reads/writes via `@s4tk/models`. This is the only file that should touch `@s4tk/models`, **and it must import from the deep subpaths** (`@s4tk/models/lib/packages/package`, `@s4tk/models/lib/resources/raw/raw-resource`), never from the `@s4tk/models` barrel. The barrel side-effect-registers `XmlResource`, `DdsImageResource`, `CombinedTuningResource`, etc., which drag in `@s4tk/xml-dom`, `@jimp/*`, `silent-dxt-js`, and `file-type` — roughly doubling the bundle. `loadRaw: true` on `Package.extractResources` short-circuits before the resource registry is ever consulted, so `Package` + `RawResource` alone are sufficient. If you need a resource type beyond raw, add its subpath import explicitly.
 - `src/gfx.ts` — Scaleform GFX tag-stream walking and character-id allocation. Pure binary, no DOM.
 - `src/shape.ts` — `DefineShape` parsing and the bitmap-fill rewrite. Pure binary, no DOM.
 - `src/migrate.ts` — Orchestrates the per-file migration: DBPF → GFX walk → shape rewrite → DBPF.
