@@ -1,5 +1,12 @@
 # Sims 4 Loading Screen Migrator
 
+[![Deploy](https://github.com/KostaGorod/ts4-toolbox/actions/workflows/deploy.yml/badge.svg)](https://github.com/KostaGorod/ts4-toolbox/actions/workflows/deploy.yml)
+[![Live on GitHub Pages](https://img.shields.io/badge/live-kostagorod.github.io%2Fts4--toolbox-7aa9ff?style=flat-square)](https://kostagorod.github.io/ts4-toolbox/)
+[![License: MIT](https://img.shields.io/github/license/KostaGorod/ts4-toolbox?style=flat-square)](./LICENSE)
+[![Stars](https://img.shields.io/github/stars/KostaGorod/ts4-toolbox?style=flat-square)](https://github.com/KostaGorod/ts4-toolbox/stargazers)
+[![Repo hits](https://hits.sh/github.com/KostaGorod/ts4-toolbox.svg?style=flat-square&label=repo%20hits&color=7aa9ff&labelColor=222736)](https://hits.sh/github.com/KostaGorod/ts4-toolbox/)
+[![Site visits](https://hits.sh/kostagorod.github.io/ts4-toolbox.svg?style=flat-square&label=site%20visits&color=7aa9ff&labelColor=222736)](https://hits.sh/kostagorod.github.io/ts4-toolbox/)
+
 Fixes the **spinning-plumbob-forever bug** caused by old custom loading-screen
 `.package` files that were authored against an older Sims 4 GFX format. The
 current game silently rejects them, leaving you stuck on the loading screen.
