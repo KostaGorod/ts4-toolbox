@@ -422,7 +422,14 @@ body.is-dragging .mascot__door { transform: rotate(0deg); }
 }
 .btn:hover:not(:disabled) { transform: translateY(-1px); }
 .btn:active:not(:disabled) { transform: translateY(0); }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: 0 0 0 2px var(--color-muted); }
+.btn:disabled,
+.btn--primary:disabled,
+.btn--gold:disabled {
+  cursor: not-allowed;
+  background: transparent;
+  color: var(--color-muted);
+  box-shadow: inset 0 0 0 1.5px var(--color-line-soft);
+}
 .btn--primary {
   background: var(--color-coral);
   color: var(--color-cream);
@@ -568,7 +575,9 @@ body.is-dragging .mascot__door { transform: rotate(0deg); }
   flex-direction: column;
   gap: var(--space-2xs);
   font-size: var(--text-sm);
+  min-width: 0; /* allow child inputs/selects to shrink instead of overflowing the grid track */
 }
+.make__form { min-width: 0; }
 .field.is-hidden { display: none !important; }
 .field__label {
   font-family: var(--font-display);
@@ -587,6 +596,8 @@ body.is-dragging .mascot__door { transform: rotate(0deg); }
 .field select {
   font: inherit;
   font-family: var(--font-body);
+  width: 100%;
+  max-width: 100%;
   padding: 10px 12px;
   background: var(--color-cream);
   color: var(--color-ink);
@@ -594,6 +605,23 @@ body.is-dragging .mascot__door { transform: rotate(0deg); }
   box-shadow: 0 0 0 1.5px var(--color-line-soft);
   border-radius: var(--r-md);
   transition: box-shadow 160ms;
+}
+.field select {
+  /* Long option labels shouldn't expand the select beyond its container.
+     The browser naturally sizes a <select> to fit its widest option unless
+     width is constrained. */
+  text-overflow: ellipsis;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--color-ink) 50%),
+    linear-gradient(-45deg, transparent 50%, var(--color-ink) 50%);
+  background-position:
+    right 16px top 17px,
+    right 10px top 17px;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 32px;
 }
 .field input[type="text"]:hover,
 .field input[type="number"]:hover,

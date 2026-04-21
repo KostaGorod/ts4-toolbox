@@ -9,12 +9,13 @@
 [![Built with Bun](https://img.shields.io/badge/bun-1.3.11-f9f1e1?style=flat-square&logo=bun&logoColor=black)](https://bun.com/)
 [![Vite](https://img.shields.io/badge/vite-8-646cff?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
 
-Fixes the **spinning-plumbob-forever bug** caused by old custom loading-screen
-`.package` files that were authored against an older Sims 4 GFX format. The
-current game silently rejects them, leaving you stuck on the loading screen.
+Fixes the **llama-plumbob flicker glitch** on old custom loading-screen
+`.package` mods: the spinning plumbob keeps swapping frames with a llama head
+mid-spin. It happens when the `.package` was authored against an older Sims 4
+GFX format; the current game's renderer stumbles on the outdated container.
 
 This tool rebuilds each old package against the current in-game loading-screen
-template so the plumbob actually stops spinning and the game loads.
+template so the plumbob stays a plumbob.
 
 Hosted build: **https://kostagorod.github.io/ts4-toolbox/**
 

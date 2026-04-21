@@ -2,7 +2,7 @@
   "name": "ts4-toolbox",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Fixes the spinning-plumbob-forever bug from outdated Sims 4 loading-screen .package mods. Browser-based bulk migrator; uses @s4tk/models for DBPF I/O.",
+  "description": "Fixes the Sims 4 llama-plumbob flicker glitch on old custom loading-screen .package mods. Browser-based bulk migrator; uses @s4tk/models for DBPF I/O.",
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",

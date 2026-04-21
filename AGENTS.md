@@ -9,7 +9,7 @@
 
 ## Project Snapshot
 
-A single-page, fully client-side web tool that bulk-migrates outdated Sims 4 loading-screen `.package` mods to the current game format. The bug it fixes is the "spinning plumbob forever" loading-screen hang — caused when a custom loading-screen package was authored against an older GFX format that the current game silently rejects. Drag-and-drop in, ZIP of migrated packages out — no backend, no uploads.
+A single-page, fully client-side web tool that bulk-migrates outdated Sims 4 loading-screen `.package` mods to the current game format. The bug it fixes is the **llama-plumbob flicker glitch** — the spinning plumbob on the loading screen keeps swapping frames with a llama head mid-spin. It happens when a custom loading-screen `.package` was authored against an older GFX format the current game's renderer can't use cleanly. Do not describe the bug as a hang or freeze; that's overclaiming. Drag-and-drop in, ZIP of migrated packages out — no backend, no uploads.
 
 This repository is small and self-contained. The bar for adding dependencies, build steps, or new top-level concepts is high; the bar for deleting cruft is low.
 
