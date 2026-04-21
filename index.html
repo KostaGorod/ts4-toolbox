@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sims 4 Cottage Loading Screen Migrator</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Sims 4 Cottage Loading Screen Migrator</h1>
+      <p class="sub">
+        Drop old <code>.package</code> files below. The migrator re-injects each package's
+        background bitmap into the current Sims 4 loading-screen GFX template and writes a
+        fresh DBPF v2.1 package via <a href="https://github.com/sims4toolkit/models" target="_blank" rel="noopener">@s4tk/models</a>.
+      </p>
+
+      <section id="drop" class="drop">
+        <input id="file-input" type="file" accept=".package" multiple hidden />
+        <p>Drop <code>.package</code> files here, or <button id="pick" type="button">pick files</button>.</p>
+      </section>
+
+      <details class="advanced">
+        <summary>Advanced</summary>
+        <label>
+          Override template GFX (optional):
+          <input id="template-input" type="file" accept=".gfx,.bin,.binary" />
+        </label>
+        <label>
+          Bitmap fill scale:
+          <input id="scale-input" type="number" value="4.7985" step="0.0001" min="1" max="8" />
+          <small>4.7985 matches shipped Sims4Studio fix packages. Raise for less black border, lower if image is cropped.</small>
+        </label>
+      </details>
+
+      <section id="status" class="status" hidden>
+        <h2>Progress</h2>
+        <ul id="log"></ul>
+        <div class="actions">
+          <button id="download-zip" type="button" disabled>Download all as ZIP</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
