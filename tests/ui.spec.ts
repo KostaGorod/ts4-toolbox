@@ -94,3 +94,38 @@ test("clear wipes the queue pane", async ({ page }) => {
   await expect(page.locator("#queue-pane")).toBeHidden();
   await expect(page.locator(".file-item")).toHaveCount(0);
 });
+
+test("bonus: PNG → .package produces a download", async ({ page }) => {
+  const pngFixture = join(here, "fixtures", "tiny.png");
+  await page.goto("/");
+
+  // Bonus section is inside a collapsed <details>; open it first.
+  await page.locator(".bonus summary").click();
+
+  // Generate button starts disabled until a PNG is picked.
+  await expect(page.locator("#png-generate")).toBeDisabled();
+
+  await page.setInputFiles("#png-input", pngFixture);
+  await expect(page.locator("#png-generate")).toBeEnabled();
+
+  const downloadPromise = page.waitForEvent("download", { timeout: 15_000 });
+  await page.locator("#png-generate").click();
+  const download = await downloadPromise;
+
+  expect(download.suggestedFilename()).toMatch(/\.package$/);
+  await expect(page.locator("#png-status")).toHaveAttribute("data-state", "ok", {
+    timeout: 15_000,
+  });
+});
+
+test("bonus: bad instance hex shows an error", async ({ page }) => {
+  const pngFixture = join(here, "fixtures", "tiny.png");
+  await page.goto("/");
+  await page.locator(".bonus summary").click();
+  await page.setInputFiles("#png-input", pngFixture);
+  await page.locator("#png-instance").fill("not-hex");
+  await page.locator("#png-generate").click();
+  await expect(page.locator("#png-status")).toHaveAttribute("data-state", "err", {
+    timeout: 5_000,
+  });
+});

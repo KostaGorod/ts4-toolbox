@@ -69,6 +69,32 @@
         </div>
         <ul id="file-queue" class="file-queue"></ul>
       </section>
+
+      <section class="bonus">
+        <details>
+          <summary><strong>Bonus: make a loading screen from any PNG</strong></summary>
+          <p class="bonus-desc">
+            Pick an image (PNG, JPEG, or WebP) and download a ready-to-drop
+            <code>.package</code> with that image as the loading-screen
+            background. By default the output replaces the Cottage Living
+            loading screen (instance <code>0x432D1D2ADDFFC6D8</code>); change
+            it below if you know the instance ID of a different screen you
+            want to target. Recommended image size is up to 2048×2048.
+          </p>
+          <label class="bonus-field">
+            Image:
+            <input id="png-input" type="file" accept="image/png,image/jpeg,image/webp" />
+          </label>
+          <label class="bonus-field">
+            DBPF instance ID (hex):
+            <input id="png-instance" type="text" value="0x432D1D2ADDFFC6D8" spellcheck="false" />
+          </label>
+          <div class="bonus-actions">
+            <button id="png-generate" type="button" disabled>Generate .package</button>
+            <span id="png-status" class="bonus-status" hidden></span>
+          </div>
+        </details>
+      </section>
     </main>
     <footer class="site-footer">
       <span>build <a id="commit-link" href="https://github.com/KostaGorod/ts4-toolbox" target="_blank" rel="noopener"><code id="commit-sha">dev</code></a></span>

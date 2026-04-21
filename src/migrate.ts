@@ -28,23 +28,24 @@ export interface MigrateOptions {
   log?: (msg: string) => void;
 }
 
-export function migrateGfx(
-  oldGfx: Uint8Array,
+// Takes a DefineBitsLossless2 tag body (char_id u16 + format + width + height +
+// zlib data) and injects it into the template GFX at the next free char id,
+// rewriting the placeholder shape to fill from that bitmap. Used by both
+// migrateGfx (bitmap lifted from an old package) and the PNG-from-scratch
+// path (bitmap built from an uploaded PNG).
+export function buildGfxFromBitmapBody(
+  bitmapBody: Uint8Array,
   templateGfx: Uint8Array,
   options: MigrateOptions = {},
 ): Uint8Array {
   const log = options.log ?? (() => {});
   const fillScale = options.fillScale ?? 4.7985;
 
-  const { body: oldBmBody } = extractBitmapTag(oldGfx);
-  const originalCharId = readBitmapCharId(oldBmBody);
-  log(`extracted DefineBitsLossless2: char_id=${originalCharId}, ${oldBmBody.length}B`);
-
   const { tags: tmplTags } = walkGfx(templateGfx);
   const newCharId = findNextFreeCharId(templateGfx, tmplTags);
   log(`template IDs end at ${newCharId - 1}; bitmap -> id ${newCharId}`);
 
-  const newBmBody = setBitmapCharId(oldBmBody, newCharId);
+  const newBmBody = setBitmapCharId(bitmapBody, newCharId);
   const newBmTagBytes = buildTagBytes(TAG_DEFINE_BITS_LOSSLESS2, newBmBody);
 
   let placeholderIdx = -1;
@@ -89,6 +90,18 @@ export function migrateGfx(
   return out;
 }
 
+export function migrateGfx(
+  oldGfx: Uint8Array,
+  templateGfx: Uint8Array,
+  options: MigrateOptions = {},
+): Uint8Array {
+  const log = options.log ?? (() => {});
+  const { body: oldBmBody } = extractBitmapTag(oldGfx);
+  const originalCharId = readBitmapCharId(oldBmBody);
+  log(`extracted DefineBitsLossless2: char_id=${originalCharId}, ${oldBmBody.length}B`);
+  return buildGfxFromBitmapBody(oldBmBody, templateGfx, options);
+}
+
 export interface MigrationResult {
   originalName: string;
   outputName: string;
@@ -127,4 +140,33 @@ function deriveOutputName(original: string): string {
     return original.slice(0, -".package".length) + "_migrated.package";
   }
   return original + "_migrated.package";
+}
+
+export interface PngPackageOptions extends MigrateOptions {
+  // DBPF instance ID — which in-game loading screen this package replaces.
+  // Default matches the Cottage Living loading-screen slot, which is what
+  // most "default loading screen" mods target.
+  instance?: bigint;
+  // Output .package filename.
+  outputName?: string;
+}
+
+export function packageFromBitmapBody(
+  bitmapBody: Uint8Array,
+  templateGfx: Uint8Array,
+  options: PngPackageOptions = {},
+): { outputName: string; packageBytes: Uint8Array } {
+  const log = options.log ?? (() => {});
+  const instance = options.instance ?? 0x432d1d2addffc6d8n;
+  const newGfx = buildGfxFromBitmapBody(bitmapBody, templateGfx, options);
+  log(`new GFX: ${newGfx.length}B`);
+  const packageBytes = writeLoadingScreenPackage(
+    { type: LOADING_SCREEN_TYPE, group: 0, instance, data: newGfx },
+    newGfx,
+  );
+  log(`wrote package: ${packageBytes.length}B (instance=0x${instance.toString(16).padStart(16, "0")})`);
+  return {
+    outputName: options.outputName ?? "loading_screen_from_png.package",
+    packageBytes,
+  };
 }

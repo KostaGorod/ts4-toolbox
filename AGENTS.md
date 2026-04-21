@@ -28,8 +28,9 @@ The codebase is intentionally small. Before adding a new module, check whether t
 - `src/dbpf.ts` — DBPF v2.1 container reads/writes via `@s4tk/models`. This is the only file that should touch `@s4tk/models`.
 - `src/gfx.ts` — Scaleform GFX tag-stream walking and character-id allocation. Pure binary, no DOM.
 - `src/shape.ts` — `DefineShape` parsing and the bitmap-fill rewrite. Pure binary, no DOM.
-- `src/migrate.ts` — Orchestrates the per-file migration: DBPF → GFX walk → shape rewrite → DBPF.
-- `src/main.ts` — All DOM, drag-and-drop, ZIP packaging, and progress UI. The only file that imports `jszip` or touches the browser.
+- `src/png.ts` — PNG/JPEG/WebP decode + encode to a `DefineBitsLossless2` tag body (zlib-compressed premultiplied ARGB). Uses `HTMLImageElement` + a 2D canvas for decode; `CompressionStream('deflate')` for zlib. Touches the DOM (the `<img>` + `<canvas>` path), so it belongs on the browser side of the module graph.
+- `src/migrate.ts` — Two orchestration entrypoints: `migratePackage` (existing package → migrated package) and `packageFromBitmapBody` (raw bitmap body → new package, used by the PNG bonus flow). Both share `buildGfxFromBitmapBody` for the template-injection + shape-rewrite step.
+- `src/main.ts` — All DOM, drag-and-drop, ZIP packaging, and progress UI. The only file that imports `jszip` or wires the bonus-flow inputs.
 
 Keep that separation. Do not let DOM code creep into the binary modules, and do not let `@s4tk/models` leak past `dbpf.ts`.
 

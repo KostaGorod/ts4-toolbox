@@ -32,3 +32,12 @@ mkdirSync(outDir, { recursive: true });
 const outPath = join(outDir, "minimal.package");
 writeFileSync(outPath, pkg);
 console.log(`wrote ${outPath} (${pkg.length}B)`);
+
+// Minimal 1×1 red PNG for the bonus PNG→.package flow test.
+const PNG_1X1_RED = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==",
+  "base64",
+);
+const pngPath = join(outDir, "tiny.png");
+writeFileSync(pngPath, PNG_1X1_RED);
+console.log(`wrote ${pngPath} (${PNG_1X1_RED.length}B)`);

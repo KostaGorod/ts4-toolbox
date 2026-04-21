@@ -1,5 +1,6 @@
 import JSZip from "jszip";
-import { migratePackage } from "./migrate";
+import { migratePackage, packageFromBitmapBody } from "./migrate";
+import { pngToBitmapBody } from "./png";
 
 // --- build metadata footer ---
 {
@@ -366,6 +367,61 @@ dropZone.addEventListener("drop", (e) => {
   e.preventDefault();
   dropZone.classList.remove("hover");
   validateAndQueue(Array.from(e.dataTransfer?.files ?? []));
+});
+
+// --- bonus: PNG → .package ---
+const pngInput = document.getElementById("png-input") as HTMLInputElement;
+const pngInstanceInput = document.getElementById("png-instance") as HTMLInputElement;
+const pngGenerate = document.getElementById("png-generate") as HTMLButtonElement;
+const pngStatus = document.getElementById("png-status") as HTMLElement;
+
+function setPngStatus(text: string, kind: "ok" | "err" | "info" = "info"): void {
+  pngStatus.textContent = text;
+  pngStatus.hidden = !text;
+  pngStatus.dataset.state = kind === "ok" ? "ok" : kind === "err" ? "err" : "";
+}
+
+function parseInstanceHex(raw: string): bigint {
+  const s = raw.trim().replace(/^0x/i, "");
+  if (!/^[0-9a-f]{1,16}$/i.test(s)) {
+    throw new Error("instance must be 1–16 hex characters");
+  }
+  return BigInt("0x" + s);
+}
+
+pngInput.addEventListener("change", () => {
+  pngGenerate.disabled = !(pngInput.files && pngInput.files.length > 0);
+  setPngStatus("");
+});
+
+pngGenerate.addEventListener("click", async () => {
+  const file = pngInput.files?.[0];
+  if (!file) return;
+  pngGenerate.disabled = true;
+  setPngStatus("reading image…", "info");
+  try {
+    const instance = parseInstanceHex(pngInstanceInput.value);
+    const pngBytes = new Uint8Array(await file.arrayBuffer());
+    const { width, height, bitmapBody } = await pngToBitmapBody(pngBytes);
+    setPngStatus(`encoded ${width}×${height} bitmap; building package…`, "info");
+    const template = await activeTemplate();
+    const scale = Number.parseFloat(scaleInput.value) || 4.7985;
+    const baseName = file.name.replace(/\.[^.]+$/, "") || "loading_screen";
+    const { outputName, packageBytes } = packageFromBitmapBody(bitmapBody, template, {
+      fillScale: scale,
+      instance,
+      outputName: `${baseName}.package`,
+    });
+    downloadFile(outputName, packageBytes);
+    setPngStatus(
+      `done — ${outputName} (${formatBytes(packageBytes.length)}). Drop it into your Mods folder.`,
+      "ok",
+    );
+  } catch (err) {
+    setPngStatus(`failed: ${(err as Error).message}`, "err");
+  } finally {
+    pngGenerate.disabled = !(pngInput.files && pngInput.files.length > 0);
+  }
 });
 
 // Keyboard reachability: the dropzone is focusable and Enter/Space opens
