@@ -26,12 +26,17 @@
       </nav>
       <h1>Sims 4 Loading Screen Migrator</h1>
       <p class="sub">
-        Fixes the spinning-plumbob-forever bug caused by old custom
-        loading-screen <code>.package</code> files that don't match the current
-        game's format. Drop your old packages below and this tool rebuilds each
-        one against the current Sims 4 loading-screen template via
-        <a href="https://github.com/sims4toolkit/models" target="_blank" rel="noopener">@s4tk/models</a>
-        — no uploads, everything runs in your browser.
+        Fixes the <strong>llama loading-screen / spinning-plumbob glitch</strong>
+        caused by old custom loading-screen <code>.package</code> mods built
+        against an outdated GFX format.
+      </p>
+      <p class="sub">
+        <strong>What it does:</strong> for each file you drop, it extracts the
+        PNG bitmap (your loading-screen image) and re-embeds it into a current
+        <strong>GFX v15</strong> container, then writes a new DBPF with the
+        same instance ID. The image itself is copied byte-for-byte — only the
+        container around it is rebuilt. Everything runs locally in your
+        browser; nothing is uploaded.
       </p>
 
       <section id="drop" class="drop">
