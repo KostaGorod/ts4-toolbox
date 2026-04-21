@@ -684,6 +684,16 @@ body.is-dragging .mascot__door { transform: rotate(0deg); }
   border-radius: var(--r-lg);
   box-shadow: 0 0 0 1.5px var(--color-line-soft);
 }
+.advanced__note {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-coral-soft);
+  border-radius: var(--r-md);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
 @media (min-width: 640px) {
   .advanced__fields { grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
 }
