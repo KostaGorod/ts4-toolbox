@@ -47,6 +47,7 @@
       <section id="drop" class="drop">
         <input id="file-input" type="file" accept=".package" multiple hidden />
         <p>Drop <code>.package</code> files here, or <button id="pick" type="button">pick files</button>.</p>
+        <p id="drop-message" class="drop-message" role="status" aria-live="polite" hidden></p>
       </section>
 
       <details class="advanced">
@@ -62,12 +63,16 @@
         </label>
       </details>
 
-      <section id="status" class="status" hidden>
-        <h2>Progress</h2>
-        <ul id="log"></ul>
-        <div class="actions">
-          <button id="download-zip" type="button" disabled>Download all as ZIP</button>
+      <section id="queue-pane" class="queue-pane" hidden>
+        <div class="summary-bar">
+          <span id="queue-summary">0 files queued</span>
+          <div class="actions">
+            <button id="start" type="button" disabled>Start</button>
+            <button id="clear" type="button" disabled>Clear</button>
+            <button id="download-zip" type="button" hidden>Download all as ZIP</button>
+          </div>
         </div>
+        <ul id="file-queue" class="file-queue"></ul>
       </section>
     </main>
     <footer class="site-footer">
