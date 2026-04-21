@@ -284,16 +284,14 @@ main {
   max-width: 340px;
   margin-inline: auto;
 }
-.hero__mascot svg {
+.hero__mascot img {
   width: 100%;
   height: auto;
   display: block;
-}
-.hero__mascot svg {
   transition: transform 420ms var(--ease-out-expo);
   transform-origin: 50% 70%;
 }
-body.is-dragging .hero__mascot svg { transform: rotate(-5deg) translateY(-4px); }
+body.is-dragging .hero__mascot img { transform: rotate(-5deg) translateY(-4px); }
 
 /* drop zone */
 .drop {

@@ -51,71 +51,7 @@
             </p>
           </div>
           <div class="hero__mascot" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
-              <style>
-                .cream-shape { fill: #FAF3E7; stroke: #181D2E; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
-                .coral-shape { fill: #F06A54; stroke: #181D2E; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
-                .gold-shape  { fill: #E5B542; stroke: #181D2E; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
-                .navy-fill   { fill: #181D2E; }
-                .cream-fill  { fill: #FAF3E7; }
-                .coral-fill  { fill: #F06A54; }
-                /* Blob technique: draw everything with an 8px navy stroke, then overlay
-                   a cream fill (no stroke) covering the inner 4px — leaves a clean
-                   continuous 4px outline around the merged silhouette. */
-                .blob-shadow { fill: #181D2E; stroke: #181D2E; stroke-width: 8; stroke-linejoin: round; stroke-linecap: round; }
-                .blob-fill   { fill: #FAF3E7; stroke: none; }
-                .line        { fill: none; stroke: #181D2E; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-              </style>
-
-              <defs>
-                <g id="main-body-blob">
-                  <ellipse cx="240" cy="225" rx="75" ry="55" />
-                  <ellipse cx="190" cy="175" rx="35" ry="60" transform="rotate(-25 190 175)" />
-                  <ellipse cx="165" cy="125" rx="50" ry="45" />
-                  <ellipse cx="125" cy="140" rx="28" ry="24" />
-                  <path d="M 160 235 L 192 235 L 188 288 A 12 12 0 0 1 164 288 Z" />
-                  <path d="M 250 240 L 282 240 L 278 285 A 12 12 0 0 1 254 285 Z" />
-                  <path d="M 155 90 Q 165 65 170 80 Q 175 55 180 80 Q 185 65 190 90 Z" />
-                </g>
-              </defs>
-
-              <!-- Right (back) ear -->
-              <path d="M 182 95 L 188 48 A 6 6 0 0 1 200 48 L 205 95 Z" transform="rotate(15 195 90)" class="coral-shape" />
-
-              <!-- Back legs -->
-              <path d="M 200 235 L 232 235 L 228 280 A 12 12 0 0 1 204 280 Z" class="cream-shape" />
-              <path d="M 280 235 L 312 235 L 308 280 A 12 12 0 0 1 284 280 Z" class="cream-shape" />
-
-              <!-- Curly tail -->
-              <path d="M 310 215 A 12 12 0 0 1 330 205 A 15 15 0 0 1 340 230 A 12 12 0 0 1 315 240 Z" class="cream-shape" />
-
-              <!-- Unified body silhouette (blob technique) -->
-              <use href="#main-body-blob" class="blob-shadow" />
-              <use href="#main-body-blob" class="blob-fill" />
-
-              <!-- Left (front) ear -->
-              <path d="M 142 95 L 148 48 A 6 6 0 0 1 160 48 L 165 95 Z" transform="rotate(-15 155 90)" class="coral-shape" />
-
-              <!-- Saddle blanket -->
-              <path d="M 195 190 C 215 168, 265 168, 285 190 L 290 220 C 290 235, 275 242, 260 242 L 220 242 C 205 242, 190 235, 190 220 Z" class="coral-shape" />
-              <circle cx="215" cy="215" r="5" class="gold-shape" />
-              <circle cx="240" cy="218" r="5" class="gold-shape" />
-              <circle cx="265" cy="215" r="5" class="gold-shape" />
-
-              <!-- Cheek blush spots -->
-              <ellipse cx="110" cy="128" rx="6" ry="4" class="coral-fill" />
-              <ellipse cx="155" cy="132" rx="9" ry="5" class="coral-fill" />
-
-              <!-- Eyes -->
-              <path d="M 110 115 Q 116 105 122 115 Q 116 125 110 115 Z" class="navy-fill" />
-              <path d="M 140 118 Q 150 105 160 118 Q 150 131 140 118 Z" class="navy-fill" />
-              <circle cx="118" cy="112" r="2" class="cream-fill" />
-              <circle cx="152" cy="114" r="2.5" class="cream-fill" />
-
-              <!-- Nose + mouth -->
-              <ellipse cx="115" cy="136" rx="4" ry="2.5" class="navy-fill" />
-              <path d="M 105 142 Q 110 150 115 145 Q 120 150 125 142" class="line" />
-            </svg>
+            <img src="./mascot.svg" alt="" width="340" height="340" />
           </div>
         </div>
         <label id="drop" class="drop" for="file-input">
