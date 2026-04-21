@@ -118,21 +118,23 @@ test("make: PNG → .package produces a download", async ({ page }) => {
   });
 });
 
-test("make: switching to Custom instance reveals the hex field", async ({ page }) => {
+test("make: instance override lives in Advanced, not in the Make form", async ({ page }) => {
   await page.goto("/");
-
-  // Custom field starts hidden (default slot selected).
-  await expect(page.locator("#png-instance-field")).toBeHidden();
-
-  await page.selectOption("#png-slot", "custom");
-  await expect(page.locator("#png-instance-field")).toBeVisible();
+  // The old slot dropdown should be gone.
+  await expect(page.locator("#png-slot")).toHaveCount(0);
+  // The override field exists — inside the (closed) Advanced details.
+  await expect(page.locator("#png-instance")).toHaveCount(1);
+  await expect(page.locator("#png-instance")).toBeHidden();
+  // Opening Advanced reveals it.
+  await page.locator(".advanced > summary").click();
+  await expect(page.locator("#png-instance")).toBeVisible();
 });
 
-test("make: bad custom hex shows an error", async ({ page }) => {
+test("make: bad Advanced instance hex shows an error on generate", async ({ page }) => {
   const pngFixture = join(here, "fixtures", "tiny.png");
   await page.goto("/");
   await page.setInputFiles("#png-input", pngFixture);
-  await page.selectOption("#png-slot", "custom");
+  await page.locator(".advanced > summary").click();
   await page.locator("#png-instance").fill("not-hex");
   await page.locator("#png-generate").click();
   await expect(page.locator("#png-status")).toHaveAttribute("data-state", "err", {

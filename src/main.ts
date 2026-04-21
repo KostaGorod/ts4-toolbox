@@ -46,11 +46,14 @@ const clearButton = document.getElementById("clear") as HTMLButtonElement;
 const downloadZipBtn = document.getElementById("download-zip") as HTMLButtonElement;
 
 const pngInput = document.getElementById("png-input") as HTMLInputElement;
-const pngSlot = document.getElementById("png-slot") as HTMLSelectElement;
-const pngInstanceField = document.getElementById("png-instance-field") as HTMLElement;
 const pngInstanceInput = document.getElementById("png-instance") as HTMLInputElement;
 const pngGenerate = document.getElementById("png-generate") as HTMLButtonElement;
 const pngStatus = document.getElementById("png-status") as HTMLElement;
+
+// Default Make target: the Cottage Living loading-screen slot. Names it here
+// so it stays out of the UI copy — visible defaults would invite confusion
+// about why this one slot is special.
+const DEFAULT_MAKE_INSTANCE = 0x432d1d2addffc6d8n;
 
 // ---------- state ----------
 type FileState = "queued" | "running" | "done" | "error";
@@ -352,15 +355,10 @@ function parseInstanceHex(raw: string): bigint {
 }
 
 function currentInstance(): bigint {
-  if (pngSlot.value === "custom") return parseInstanceHex(pngInstanceInput.value);
-  return parseInstanceHex(pngSlot.value);
+  const raw = pngInstanceInput.value.trim();
+  if (!raw) return DEFAULT_MAKE_INSTANCE;
+  return parseInstanceHex(raw);
 }
-
-pngSlot.addEventListener("change", () => {
-  const isCustom = pngSlot.value === "custom";
-  pngInstanceField.classList.toggle("is-hidden", !isCustom);
-  if (isCustom) pngInstanceInput.focus();
-});
 
 pngInput.addEventListener("change", () => {
   pngGenerate.disabled = !(pngInput.files && pngInput.files.length > 0);

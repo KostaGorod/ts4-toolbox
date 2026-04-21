@@ -93,18 +93,6 @@
             <input id="png-input" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="png-input-help" />
             <p id="png-input-help" class="field__help">Tip: 16:9 or wider reads best on the loading screen.</p>
           </div>
-          <div class="field">
-            <label for="png-slot" class="field__label">Target loading screen</label>
-            <select id="png-slot">
-              <option value="0x432D1D2ADDFFC6D8" selected>Cottage Living — default loading screen</option>
-              <option value="custom">Custom instance ID…</option>
-            </select>
-          </div>
-          <div class="field is-hidden" id="png-instance-field">
-            <label for="png-instance" class="field__label">Instance ID (hex)</label>
-            <input id="png-instance" type="text" value="0x432D1D2ADDFFC6D8" spellcheck="false" autocomplete="off" aria-describedby="png-instance-help" />
-            <p id="png-instance-help" class="field__help">16 hex digits, with or without the <code>0x</code> prefix.</p>
-          </div>
           <div class="make__actions">
             <button id="png-generate" class="btn btn--gold" type="button" disabled>Generate the package</button>
             <span id="png-status" class="make__status" hidden></span>
@@ -112,11 +100,67 @@
         </div>
       </section>
 
+      <section id="faq" class="faq">
+        <div class="faq__intro">
+          <p class="faq__eyebrow">Good questions</p>
+          <h2 class="faq__title">How this works · is it safe?</h2>
+          <p class="faq__sub">The short version: your image bytes are copied untouched; only the container around them is rebuilt. The long version is below.</p>
+        </div>
+        <div class="faq__list">
+          <details class="faq__item">
+            <summary>What is the tool actually doing to my <code>.package</code>?</summary>
+            <div class="faq__body">
+              <ol>
+                <li><strong>Reads the old package.</strong> A Sims 4 loading-screen <code>.package</code> is a DBPF v2.1 container holding one Scaleform GFX resource. The tool opens it and pulls out that resource.</li>
+                <li><strong>Lifts the bitmap.</strong> Inside the GFX there's a single <code>DefineBitsLossless2</code> tag — your loading-screen image as a zlib-compressed 32-bit ARGB bitmap. The tool extracts those bytes without decoding them.</li>
+                <li><strong>Puts it in a fresh GFX v15 container.</strong> The tool then pastes the bitmap bytes into the current game's loading-screen template at the next free character ID, and rewrites the placeholder <code>DefineShape</code> so it fills from your bitmap instead of the placeholder solid color.</li>
+                <li><strong>Writes a new <code>.package</code>.</strong> A new DBPF v2.1 container is emitted with the same instance ID (Fix flow) or a chosen instance ID (Make flow), zlib-compressing the rebuilt GFX payload.</li>
+              </ol>
+            </div>
+          </details>
+          <details class="faq__item">
+            <summary>Is my file safe? Is anything uploaded?</summary>
+            <div class="faq__body">
+              <p>Nothing is uploaded. All work happens in your browser. There's no server for this tool — the page itself is a static file on GitHub Pages, and every byte of your <code>.package</code> stays on your machine.</p>
+              <p>Your original file is never modified. The tool reads it into memory, does the work, and offers you a <em>new</em> file to download. If you never click Save on the download, the fixed file goes away when the tab closes.</p>
+              <p>Your image bytes are copied byte-for-byte: we don't re-encode, recompress, or resize your bitmap. The pixel data that was in your old package is the exact pixel data in the new one — only the wrapper around it changes.</p>
+            </div>
+          </details>
+          <details class="faq__item">
+            <summary>Why does the llama-plumbob flicker happen in the first place?</summary>
+            <div class="faq__body">
+              <p>The Sims 4's loading-screen subsystem expects loading-screen packages in a specific GFX format. Old custom loading-screen mods were authored against an earlier version of that format, and the current game's renderer gets confused trying to draw them — the result is the spinning plumbob swapping frames with a llama head mid-animation.</p>
+              <p>This tool rebuilds those old packages against the current GFX template (v15), which is what the game's renderer expects today.</p>
+            </div>
+          </details>
+          <details class="faq__item">
+            <summary>What if a file fails to fix?</summary>
+            <div class="faq__body">
+              <p>Some <code>.package</code> files don't contain a lone Scaleform GFX resource — a build-mode mod, a CAS recolor, or a script mod will fail at the first step because its contents don't match the loading-screen layout the tool expects. You'll see a specific error on the card (hover it for the full message); click <strong>Try again</strong> if you think it was transient.</p>
+              <p>The tool will also skip files larger than 50 MB. Loading screens are typically 1–10 MB; anything much bigger is almost certainly not a loading-screen package and got into the drop zone by mistake.</p>
+            </div>
+          </details>
+          <details class="faq__item">
+            <summary>Why not just use Sims 4 Studio?</summary>
+            <div class="faq__body">
+              <p><a href="https://sims4studio.com/" target="_blank" rel="noopener">Sims 4 Studio</a> can absolutely do this — it's the right tool for serious modding work. This page is the two-click version for when you already have a broken file and just want a working one: no install, no learning curve, multi-file at once, runs anywhere a browser runs (including phones and tablets).</p>
+              <p>If you're authoring new mods from scratch or need to handle anything beyond loading screens, use S4S. If you have broken loading-screen packages and want them fixed in under a minute, this is faster.</p>
+            </div>
+          </details>
+          <details class="faq__item">
+            <summary>My generated loading screen has black borders or looks cropped — how do I fix it?</summary>
+            <div class="faq__body">
+              <p>Open <strong>Advanced</strong> below and tweak the <strong>Bitmap fill scale</strong>. The default (4.7985) matches what Sims 4 Studio emits and fits a standard 16:9 image cleanly. <strong>Raise it</strong> if you see a black border around your image (the bitmap is being under-stretched). <strong>Lower it</strong> if the image is being cropped too aggressively.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
       <details class="advanced">
         <summary>Advanced · applies to both Fix and Make</summary>
         <div class="advanced__fields">
           <p class="advanced__note">
-            These two settings affect every package this tool produces — the Fix flow above and the Make flow too.
+            Template override and fill scale apply to every package this tool produces — Fix and Make. The Make instance ID is Make-only.
           </p>
           <div class="field">
             <label for="template-input" class="field__label">Override template GFX (optional)</label>
@@ -128,6 +172,13 @@
             <input id="scale-input" type="number" value="4.7985" step="0.0001" min="1" max="8" aria-describedby="scale-input-help" />
             <p id="scale-input-help" class="field__help">
               4.7985 matches the shipped template. Raise for less black border, lower if the image is cropped.
+            </p>
+          </div>
+          <div class="field advanced__fields-span">
+            <label for="png-instance" class="field__label">Make · target loading-screen slot (hex)</label>
+            <input id="png-instance" type="text" placeholder="0x432D1D2ADDFFC6D8" spellcheck="false" autocomplete="off" aria-describedby="png-instance-help" />
+            <p id="png-instance-help" class="field__help">
+              Which in-game loading-screen slot a package made from a PNG replaces. Leave blank to use the default slot; enter 1–16 hex digits (with or without the <code>0x</code> prefix) to target a different one.
             </p>
           </div>
         </div>
