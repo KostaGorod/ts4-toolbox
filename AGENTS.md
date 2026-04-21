@@ -4,6 +4,7 @@
 
 - `bun run build` must pass before considering a task complete. It runs `tsc --noEmit` followed by `vite build`; both must succeed.
 - `bun run smoke` must still produce the expected GFX walk + DBPF round-trip output (140 tags, next free char id 119, 1 round-tripped entry) for any change touching `src/gfx.ts`, `src/shape.ts`, `src/dbpf.ts`, or `src/migrate.ts`.
+- `bun run test:e2e` must pass before shipping any change that touches `src/**`, `vite.config.ts`, `tsconfig.json`, or `package.json`. This runs the *built bundle* in headless Chromium and fails on runtime errors like `Package.extractResources is not a function` — the kind of bundler regression that `tsc` and `smoke` (both of which use Bun's native module resolution) cannot see. CI runs this gate before uploading the Pages artifact.
 - Use `bun` for everything. Do not introduce `npm`, `pnpm`, or `yarn` commands, and do not commit `package-lock.json` / `pnpm-lock.yaml` / `yarn.lock` — the only lockfile is `bun.lock`.
 
 ## Project Snapshot
