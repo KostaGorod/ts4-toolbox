@@ -11,6 +11,24 @@ import { migratePackage } from "./migrate";
   }
 }
 
+// --- live star count on the header button ---
+void (async () => {
+  const el = document.getElementById("gh-star-count");
+  if (!el) return;
+  try {
+    const r = await fetch("https://api.github.com/repos/KostaGorod/ts4-toolbox", {
+      headers: { Accept: "application/vnd.github+json" },
+    });
+    if (!r.ok) return;
+    const body = (await r.json()) as { stargazers_count?: number };
+    if (typeof body.stargazers_count === "number") {
+      el.textContent = body.stargazers_count.toLocaleString();
+    }
+  } catch {
+    // Offline or rate-limited — the button still renders without a count.
+  }
+})();
+
 // --- DOM references ---
 const dropZone = document.getElementById("drop") as HTMLElement;
 const dropMessage = document.getElementById("drop-message") as HTMLParagraphElement;
