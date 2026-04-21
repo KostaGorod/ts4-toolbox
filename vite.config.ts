@@ -5,11 +5,8 @@ export default defineConfig({
   base: "./",
   plugins: [
     nodePolyfills({
-      // @s4tk/models deep-imports (dbpf.ts) only touch Buffer + zlib; the
-      // XML/image resources that used to pull in stream/util/events/assert
-      // are no longer in the graph.
-      include: ["buffer", "zlib", "stream"],
-      globals: { Buffer: true, global: false, process: false },
+      include: ["buffer", "zlib", "stream", "util", "events", "assert"],
+      globals: { Buffer: true, global: true, process: true },
     }),
   ],
   build: {

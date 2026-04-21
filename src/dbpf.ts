@@ -2,13 +2,7 @@
 // resource (Scaleform GFX) of type 0x62ECC59A. We read its payload, replace it
 // with a new GFX, and let @s4tk/models serialize the container.
 
-// Deep subpath imports bypass @s4tk/models' barrel (models.js), which
-// side-effect-registers XmlResource, DdsImageResource, CombinedTuningResource,
-// etc. Those pull in @s4tk/xml-dom, @jimp/*, silent-dxt-js, file-type — none
-// of which we need. `loadRaw: true` below never consults the resource registry,
-// so Package + RawResource alone are sufficient.
-import Package from "@s4tk/models/lib/packages/package";
-import RawResource from "@s4tk/models/lib/resources/raw/raw-resource";
+import { Package, RawResource } from "@s4tk/models";
 import { CompressionType } from "@s4tk/compression";
 import { Buffer } from "buffer";
 
