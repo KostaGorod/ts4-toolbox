@@ -1,11 +1,13 @@
 # Sims 4 Loading Screen Migrator
 
-[![Deploy](https://github.com/KostaGorod/ts4-toolbox/actions/workflows/deploy.yml/badge.svg)](https://github.com/KostaGorod/ts4-toolbox/actions/workflows/deploy.yml)
-[![Live on GitHub Pages](https://img.shields.io/badge/live-kostagorod.github.io%2Fts4--toolbox-7aa9ff?style=flat-square)](https://kostagorod.github.io/ts4-toolbox/)
+[![Deploy to GitHub Pages](https://github.com/KostaGorod/ts4-toolbox/actions/workflows/deploy.yml/badge.svg)](https://github.com/KostaGorod/ts4-toolbox/actions/workflows/deploy.yml)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fkostagorod.github.io%2Fts4-toolbox%2F&label=site&style=flat-square)](https://kostagorod.github.io/ts4-toolbox/)
 [![License: MIT](https://img.shields.io/github/license/KostaGorod/ts4-toolbox?style=flat-square)](./LICENSE)
-[![Stars](https://img.shields.io/github/stars/KostaGorod/ts4-toolbox?style=flat-square)](https://github.com/KostaGorod/ts4-toolbox/stargazers)
-[![Repo hits](https://hits.sh/github.com/KostaGorod/ts4-toolbox.svg?style=flat-square&label=repo%20hits&color=7aa9ff&labelColor=222736)](https://hits.sh/github.com/KostaGorod/ts4-toolbox/)
-[![Site visits](https://hits.sh/kostagorod.github.io/ts4-toolbox.svg?style=flat-square&label=site%20visits&color=7aa9ff&labelColor=222736)](https://hits.sh/kostagorod.github.io/ts4-toolbox/)
+[![Stars](https://img.shields.io/github/stars/KostaGorod/ts4-toolbox?style=flat-square&logo=github)](https://github.com/KostaGorod/ts4-toolbox/stargazers)
+[![Forks](https://img.shields.io/github/forks/KostaGorod/ts4-toolbox?style=flat-square&logo=github)](https://github.com/KostaGorod/ts4-toolbox/network/members)
+[![Last commit](https://img.shields.io/github/last-commit/KostaGorod/ts4-toolbox?style=flat-square)](https://github.com/KostaGorod/ts4-toolbox/commits/main)
+[![Built with Bun](https://img.shields.io/badge/bun-1.3.11-f9f1e1?style=flat-square&logo=bun&logoColor=black)](https://bun.com/)
+[![Vite](https://img.shields.io/badge/vite-8-646cff?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
 
 Fixes the **spinning-plumbob-forever bug** caused by old custom loading-screen
 `.package` files that were authored against an older Sims 4 GFX format. The
