@@ -429,8 +429,8 @@ downloadZipBtn.addEventListener("click", () => void downloadAllAsZip());
 // Drag state — listen on the drop zone for the visual hover state, on the
 // whole window to pick up the mascot animation even if the pointer is near
 // but not over the zone.
-function showOver(): void { dropZone.classList.add("is-over"); document.body.classList.add("is-dragging"); }
-function clearOver(): void { dropZone.classList.remove("is-over"); document.body.classList.remove("is-dragging"); }
+function showOver(): void { dropZone.classList.add("is-over"); }
+function clearOver(): void { dropZone.classList.remove("is-over"); }
 
 dropZone.addEventListener("dragenter", (e) => { e.preventDefault(); showOver(); });
 dropZone.addEventListener("dragover",  (e) => { e.preventDefault(); showOver(); });

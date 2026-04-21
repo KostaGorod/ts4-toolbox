@@ -288,19 +288,6 @@ main {
   width: 100%;
   height: auto;
   display: block;
-  transform-origin: 50% 75%;
-  animation: mascot-idle 5s ease-in-out infinite;
-  transition: transform 420ms var(--ease-out-expo);
-}
-@keyframes mascot-idle {
-  0%   { transform: rotate(-1.5deg) translateY(0); }
-  50%  { transform: rotate( 1.5deg) translateY(-4px); }
-  100% { transform: rotate(-1.5deg) translateY(0); }
-}
-/* drag-over beat: pause the idle sway, strike a bigger pose */
-body.is-dragging .hero__mascot img {
-  animation: none;
-  transform: rotate(-7deg) translateY(-8px) scale(1.03);
 }
 
 /* drop zone */
