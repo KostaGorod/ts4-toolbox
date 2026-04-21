@@ -289,12 +289,11 @@ main {
   height: auto;
   display: block;
 }
-.mascot__head {
-  transform-origin: 118px 90px;
-  transform-box: view-box;
-  transition: transform 360ms var(--ease-out-expo);
+.hero__mascot svg {
+  transition: transform 420ms var(--ease-out-expo);
+  transform-origin: 50% 70%;
 }
-body.is-dragging .mascot__head { transform: rotate(-8deg); }
+body.is-dragging .hero__mascot svg { transform: rotate(-5deg) translateY(-4px); }
 
 /* drop zone */
 .drop {
