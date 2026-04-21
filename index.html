@@ -52,36 +52,60 @@
           </div>
           <div class="hero__mascot" aria-hidden="true">
             <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
-              <!-- Ground shadow -->
-              <ellipse cx="110" cy="198" rx="72" ry="8" fill="currentColor" opacity="0.08"/>
-              <!-- Chimney -->
-              <rect x="154" y="42" width="20" height="34" rx="4" fill="var(--color-coral)"/>
-              <circle cx="164" cy="40" r="7" fill="var(--color-gold)"/>
-              <circle cx="160" cy="34" r="4" fill="var(--color-gold)" opacity="0.6"/>
-              <!-- Roof -->
-              <path d="M34 92 L110 40 L186 92 L186 108 L34 108 Z" fill="var(--color-coral)" stroke="var(--color-ink)" stroke-width="3" stroke-linejoin="round"/>
-              <!-- Body -->
-              <rect x="48" y="104" width="124" height="90" rx="8" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="3"/>
-              <!-- Window (left eye) -->
-              <rect x="64" y="120" width="26" height="26" rx="4" fill="var(--color-gold)" stroke="var(--color-ink)" stroke-width="2.5"/>
-              <line x1="77" y1="120" x2="77" y2="146" stroke="var(--color-ink)" stroke-width="2"/>
-              <line x1="64" y1="133" x2="90" y2="133" stroke="var(--color-ink)" stroke-width="2"/>
-              <!-- Window (right eye) -->
-              <rect x="130" y="120" width="26" height="26" rx="4" fill="var(--color-gold)" stroke="var(--color-ink)" stroke-width="2.5"/>
-              <line x1="143" y1="120" x2="143" y2="146" stroke="var(--color-ink)" stroke-width="2"/>
-              <line x1="130" y1="133" x2="156" y2="133" stroke="var(--color-ink)" stroke-width="2"/>
-              <!-- Door frame -->
-              <rect x="92" y="150" width="36" height="44" rx="4" fill="var(--color-ink)" opacity="0.12"/>
-              <!-- Door (ajar, rotated a few degrees) -->
-              <g transform="rotate(-18 92 194)" class="mascot__door">
-                <rect x="92" y="150" width="36" height="44" rx="4" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2.5"/>
-                <circle cx="121" cy="172" r="1.8" fill="var(--color-ink)"/>
+              <!-- ground shadow -->
+              <ellipse cx="110" cy="205" rx="60" ry="5" fill="currentColor" opacity="0.08"/>
+
+              <!-- back legs (drawn first so body overlaps their tops) -->
+              <rect x="86"  y="168" width="14" height="34" rx="5" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2.5"/>
+              <rect x="120" y="168" width="14" height="34" rx="5" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2.5"/>
+
+              <!-- curly tail -->
+              <path d="M158 148 Q172 142 168 128 Q162 122 158 130" fill="none" stroke="var(--color-ink)" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- body -->
+              <ellipse cx="110" cy="148" rx="52" ry="32" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="3"/>
+
+              <!-- saddle blanket -->
+              <path d="M72 132 Q110 118 148 132 L146 158 Q110 168 74 158 Z" fill="var(--color-coral)" stroke="var(--color-ink)" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="88"  cy="144" r="2.2" fill="var(--color-gold)"/>
+              <circle cx="110" cy="140" r="2.2" fill="var(--color-gold)"/>
+              <circle cx="132" cy="144" r="2.2" fill="var(--color-gold)"/>
+              <circle cx="98"  cy="152" r="2" fill="var(--color-gold)" opacity="0.8"/>
+              <circle cx="122" cy="152" r="2" fill="var(--color-gold)" opacity="0.8"/>
+
+              <!-- neck (thick, rising from body to head) -->
+              <path d="M100 134 Q94 100 108 80 L128 80 Q134 100 132 134 Z" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="3" stroke-linejoin="round"/>
+
+              <!-- head group (tilts on dragover) -->
+              <g class="mascot__head">
+                <!-- head -->
+                <ellipse cx="118" cy="62" rx="32" ry="27" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="3"/>
+
+                <!-- ears (two rounded almonds) -->
+                <path d="M97 42 Q94 22 104 26 Q107 34 104 48 Z" fill="var(--color-coral)" stroke="var(--color-ink)" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M137 42 Q140 22 130 26 Q127 34 130 48 Z" fill="var(--color-coral)" stroke="var(--color-ink)" stroke-width="2.5" stroke-linejoin="round"/>
+
+                <!-- little forelock tuft -->
+                <path d="M110 36 Q114 28 120 36" fill="none" stroke="var(--color-ink)" stroke-width="2.5" stroke-linecap="round"/>
+
+                <!-- eyes -->
+                <ellipse cx="108" cy="62" rx="3.4" ry="4" fill="var(--color-ink)"/>
+                <ellipse cx="128" cy="62" rx="3.4" ry="4" fill="var(--color-ink)"/>
+                <!-- eye highlights -->
+                <circle cx="109" cy="60" r="1.2" fill="var(--color-cream)"/>
+                <circle cx="129" cy="60" r="1.2" fill="var(--color-cream)"/>
+
+                <!-- snout/muzzle -->
+                <ellipse cx="119" cy="78" rx="11" ry="7" fill="var(--color-surface-2)" stroke="var(--color-ink)" stroke-width="2"/>
+                <!-- nostrils + smile -->
+                <circle cx="115" cy="76" r="0.8" fill="var(--color-ink)"/>
+                <circle cx="123" cy="76" r="0.8" fill="var(--color-ink)"/>
+                <path d="M113 82 Q119 86 125 82" stroke="var(--color-ink)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+                <!-- blush spots -->
+                <ellipse cx="96"  cy="70" rx="4" ry="2.2" fill="var(--color-coral)" opacity="0.5"/>
+                <ellipse cx="140" cy="70" rx="4" ry="2.2" fill="var(--color-coral)" opacity="0.5"/>
               </g>
-              <!-- Tiny plant flourish next to the door -->
-              <path d="M150 194 Q154 180 158 194" stroke="var(--color-leaf)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-              <path d="M154 192 Q152 184 150 182" stroke="var(--color-leaf)" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <!-- Cheeky smile between the windows -->
-              <path d="M96 164 Q110 170 124 164" stroke="var(--color-ink)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
             </svg>
           </div>
         </div>

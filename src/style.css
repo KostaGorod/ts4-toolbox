@@ -289,11 +289,12 @@ main {
   height: auto;
   display: block;
 }
-.mascot__door {
-  transform-origin: 92px 194px;
-  transform-box: fill-box;
+.mascot__head {
+  transform-origin: 118px 90px;
+  transform-box: view-box;
   transition: transform 360ms var(--ease-out-expo);
 }
+body.is-dragging .mascot__head { transform: rotate(-8deg); }
 
 /* drop zone */
 .drop {
@@ -315,11 +316,6 @@ main {
   background: var(--color-coral-soft);
   box-shadow: var(--depth-hover);
   transform: translateY(-2px);
-}
-.drop.is-over .mascot__door,
-.drop:hover ~ .hero__grid .mascot__door {
-  /* door swings on dragover (mascot is outside label; selector won't cascade — handled in JS via :root class) */
-  transform: rotate(0deg);
 }
 .drop__badge {
   display: inline-block;
@@ -365,8 +361,6 @@ main {
   margin-inline: auto;
 }
 
-/* dragover animation for mascot via sibling state class on <body> */
-body.is-dragging .mascot__door { transform: rotate(0deg); }
 
 /* ---------- queue pane ---------- */
 .queue-pane {
