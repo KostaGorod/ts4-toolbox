@@ -5,9 +5,9 @@
   "description": "Browser-based bulk migrator for Sims 4 Cottage Loading Screen .package files. Uses @s4tk/models for DBPF I/O.",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "bunx --bun vite",
+    "build": "tsc --noEmit && bunx --bun vite build",
+    "preview": "bunx --bun vite preview",
     "smoke": "bun scripts/smoke.mjs"
   },
   "dependencies": {
