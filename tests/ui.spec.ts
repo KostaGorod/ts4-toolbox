@@ -1,6 +1,7 @@
-// Broader UX walkthrough — runs once during QC, not kept in CI.
-// Intentionally not gated on BUNDLING_SIGNALS; this validates interaction,
-// state transitions, and the button visibility rules.
+// UX-contract tests for the Llama Plumbob Glitch Fixer page.
+// Intentionally not gated on BUNDLING_SIGNALS (that's bundle.spec.ts);
+// these validate interaction, state transitions, and visibility rules
+// that the design brief promises.
 
 import { test, expect } from "@playwright/test";
 import { fileURLToPath } from "node:url";
@@ -10,42 +11,43 @@ import { writeFileSync, mkdirSync } from "node:fs";
 const here = dirname(fileURLToPath(import.meta.url));
 const fixture = join(here, "fixtures", "minimal.package");
 
-test("review flow: drop → review → start → settle → zip", async ({ page }) => {
+test("review flow: drop → review → fix them all → settle → zip button appears", async ({ page }) => {
   await page.goto("/");
 
-  // Initial state: queue-pane is hidden.
+  // Initial state: queue-pane is hidden, Fix section visible.
+  await expect(page.locator("#fix")).toBeVisible();
   await expect(page.locator("#queue-pane")).toBeHidden();
 
-  // Drop a .package fixture via file input.
+  // Drop a .package fixture via the hidden file input.
   await page.setInputFiles("#file-input", fixture);
   await expect(page.locator("#queue-pane")).toBeVisible();
   await expect(page.locator(".file-item")).toHaveCount(1);
   await expect(page.locator(".file-item").first()).toHaveAttribute("data-state", "queued");
 
-  // Start button: visible and enabled.
-  await expect(page.locator("#start")).toBeVisible();
-  await expect(page.locator("#start")).toBeEnabled();
+  // Start button: visible, enabled, with the singular copy because there's 1 file.
+  const start = page.locator("#start");
+  await expect(start).toBeVisible();
+  await expect(start).toBeEnabled();
+  await expect(start).toHaveText(/Fix this one/i);
 
-  // ZIP button: hidden (nothing done).
+  // ZIP button: hidden (nothing done yet).
   await expect(page.locator("#download-zip")).toBeHidden();
 
-  // Summary reads count + size.
+  // Summary mentions the file count.
   await expect(page.locator("#queue-summary")).toContainText(/1 file/i);
 
-  // Click start.
-  await page.locator("#start").click();
+  // Go.
+  await start.click();
 
-  // Wait for settle (this fixture fails at the GFX bitmap extraction step).
+  // Wait for settle — fixture fails at GFX bitmap extraction (expected).
   await expect(page.locator(".file-item").first()).toHaveAttribute(
     "data-state",
     /done|error/,
     { timeout: 15_000 },
   );
 
-  // Start should be hidden now (nothing queued).
-  await expect(page.locator("#start")).toBeHidden();
-
-  // Clear should be enabled.
+  // Start should be hidden (nothing queued); Clear enabled.
+  await expect(start).toBeHidden();
   await expect(page.locator("#clear")).toBeEnabled();
 });
 
@@ -57,8 +59,7 @@ test("dedupe: dropping the same filename twice only adds once", async ({ page })
   await expect(page.locator(".file-item")).toHaveCount(1);
 });
 
-test("validation: non-.package file is rejected with a message", async ({ page }, testInfo) => {
-  // Write a temp non-.package file.
+test("validation: non-.package file is rejected with an inline message", async ({ page }, testInfo) => {
   const tmp = testInfo.outputPath("not-a-package.txt");
   mkdirSync(dirname(tmp), { recursive: true });
   writeFileSync(tmp, "nope");
@@ -66,13 +67,12 @@ test("validation: non-.package file is rejected with a message", async ({ page }
   await page.goto("/");
   await page.setInputFiles("#file-input", tmp);
 
-  // Queue pane stays hidden, drop message shows.
   await expect(page.locator("#queue-pane")).toBeHidden();
   await expect(page.locator("#drop-message")).toBeVisible();
   await expect(page.locator("#drop-message")).toContainText(/Skipped.*not a \.package/i);
 });
 
-test("remove button takes a card out of the queue", async ({ page }) => {
+test("remove button takes a card out of the queue and collapses the pane when empty", async ({ page }) => {
   await page.goto("/");
   await page.setInputFiles("#file-input", fixture);
   await expect(page.locator(".file-item")).toHaveCount(1);
@@ -95,14 +95,14 @@ test("clear wipes the queue pane", async ({ page }) => {
   await expect(page.locator(".file-item")).toHaveCount(0);
 });
 
-test("bonus: PNG → .package produces a download", async ({ page }) => {
+test("make: PNG → .package produces a download", async ({ page }) => {
   const pngFixture = join(here, "fixtures", "tiny.png");
   await page.goto("/");
 
-  // Bonus section is inside a collapsed <details>; open it first.
-  await page.locator(".bonus summary").click();
+  // Make section is visible (not collapsed) — equal billing.
+  await expect(page.locator("#make")).toBeVisible();
 
-  // Generate button starts disabled until a PNG is picked.
+  // Generate button disabled until a PNG is picked.
   await expect(page.locator("#png-generate")).toBeDisabled();
 
   await page.setInputFiles("#png-input", pngFixture);
@@ -118,11 +118,21 @@ test("bonus: PNG → .package produces a download", async ({ page }) => {
   });
 });
 
-test("bonus: bad instance hex shows an error", async ({ page }) => {
+test("make: switching to Custom instance reveals the hex field", async ({ page }) => {
+  await page.goto("/");
+
+  // Custom field starts hidden (default slot selected).
+  await expect(page.locator("#png-instance-field")).toBeHidden();
+
+  await page.selectOption("#png-slot", "custom");
+  await expect(page.locator("#png-instance-field")).toBeVisible();
+});
+
+test("make: bad custom hex shows an error", async ({ page }) => {
   const pngFixture = join(here, "fixtures", "tiny.png");
   await page.goto("/");
-  await page.locator(".bonus summary").click();
   await page.setInputFiles("#png-input", pngFixture);
+  await page.selectOption("#png-slot", "custom");
   await page.locator("#png-instance").fill("not-hex");
   await page.locator("#png-generate").click();
   await expect(page.locator("#png-status")).toHaveAttribute("data-state", "err", {

@@ -2,7 +2,7 @@ import JSZip from "jszip";
 import { migratePackage, packageFromBitmapBody } from "./migrate";
 import { pngToBitmapBody } from "./png";
 
-// --- build metadata footer ---
+// ---------- build metadata ----------
 {
   const el = document.getElementById("commit-sha");
   const link = document.getElementById("commit-link") as HTMLAnchorElement | null;
@@ -12,7 +12,7 @@ import { pngToBitmapBody } from "./png";
   }
 }
 
-// --- live star count on the header button ---
+// ---------- live star count on header button ----------
 void (async () => {
   const el = document.getElementById("gh-star-count");
   if (!el) return;
@@ -26,12 +26,12 @@ void (async () => {
       el.textContent = body.stargazers_count.toLocaleString();
     }
   } catch {
-    // Offline or rate-limited — the button still renders without a count.
+    // offline or rate-limited; count span hides via CSS :empty
   }
 })();
 
-// --- DOM references ---
-const dropZone = document.getElementById("drop") as HTMLElement;
+// ---------- DOM refs ----------
+const dropZone = document.getElementById("drop") as HTMLLabelElement;
 const dropMessage = document.getElementById("drop-message") as HTMLParagraphElement;
 const fileInput = document.getElementById("file-input") as HTMLInputElement;
 const pickButton = document.getElementById("pick") as HTMLButtonElement;
@@ -45,7 +45,14 @@ const startButton = document.getElementById("start") as HTMLButtonElement;
 const clearButton = document.getElementById("clear") as HTMLButtonElement;
 const downloadZipBtn = document.getElementById("download-zip") as HTMLButtonElement;
 
-// --- state ---
+const pngInput = document.getElementById("png-input") as HTMLInputElement;
+const pngSlot = document.getElementById("png-slot") as HTMLSelectElement;
+const pngInstanceField = document.getElementById("png-instance-field") as HTMLElement;
+const pngInstanceInput = document.getElementById("png-instance") as HTMLInputElement;
+const pngGenerate = document.getElementById("png-generate") as HTMLButtonElement;
+const pngStatus = document.getElementById("png-status") as HTMLElement;
+
+// ---------- state ----------
 type FileState = "queued" | "running" | "done" | "error";
 
 interface QueuedFile {
@@ -66,7 +73,7 @@ const MAX_SIZE_BYTES = 50 * 1024 * 1024;
 const CONCURRENCY = 4;
 const PACKAGE_EXT = ".package";
 
-// --- template loading (unchanged semantics) ---
+// ---------- template loading ----------
 let bundledTemplate: Uint8Array | null = null;
 async function loadBundledTemplate(): Promise<Uint8Array> {
   if (bundledTemplate) return bundledTemplate;
@@ -81,27 +88,30 @@ async function activeTemplate(): Promise<Uint8Array> {
   return loadBundledTemplate();
 }
 
-// --- helpers ---
+// ---------- helpers ----------
 function formatBytes(n: number): string {
   if (n < 1024) return `${n} B`;
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
   return `${(n / 1024 / 1024).toFixed(2)} MB`;
 }
 
-let dropMessageTimer: number | undefined;
+let dropMsgTimer: number | undefined;
 function flashDropMessage(text: string): void {
   dropMessage.textContent = text;
   dropMessage.hidden = false;
-  if (dropMessageTimer !== undefined) window.clearTimeout(dropMessageTimer);
-  dropMessageTimer = window.setTimeout(() => {
+  if (dropMsgTimer !== undefined) window.clearTimeout(dropMsgTimer);
+  dropMsgTimer = window.setTimeout(() => {
     dropMessage.hidden = true;
-  }, 4500);
+  }, 5000);
 }
 
 function setCardState(q: QueuedFile, state: FileState, message?: string): void {
   q.state = state;
   q.card.dataset.state = state;
-  q.pill.textContent = state;
+  q.pill.textContent =
+    state === "queued" ? "queued" :
+    state === "running" ? "fixing" :
+    state === "done" ? "fixed" : "error";
   q.errorMessage = state === "error" ? message : undefined;
   q.retryBtn.hidden = state !== "error";
   q.removeBtn.disabled = state === "running";
@@ -130,7 +140,7 @@ function createCard(file: File): QueuedFile {
   const retryBtn = document.createElement("button");
   retryBtn.type = "button";
   retryBtn.className = "retry";
-  retryBtn.textContent = "Retry";
+  retryBtn.textContent = "Try again";
   retryBtn.hidden = true;
 
   const removeBtn = document.createElement("button");
@@ -144,8 +154,8 @@ function createCard(file: File): QueuedFile {
   const id = (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`) as string;
   const q: QueuedFile = { id, file, state: "queued", card, pill, retryBtn, removeBtn };
 
-  removeBtn.addEventListener("click", () => removeFromQueue(q));
-  retryBtn.addEventListener("click", () => void retryOne(q));
+  removeBtn.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); removeFromQueue(q); });
+  retryBtn.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); void retryOne(q); });
 
   return q;
 }
@@ -160,7 +170,7 @@ function removeFromQueue(q: QueuedFile): void {
   if (queue.length === 0) queuePane.hidden = true;
 }
 
-// --- validation + enqueue ---
+// ---------- validation + enqueue ----------
 function validateAndQueue(files: File[]): void {
   if (!files.length) return;
   const rejects: string[] = [];
@@ -173,7 +183,7 @@ function validateAndQueue(files: File[]): void {
       continue;
     }
     if (f.size > MAX_SIZE_BYTES) {
-      rejects.push(`${f.name} (> ${formatBytes(MAX_SIZE_BYTES)})`);
+      rejects.push(`${f.name} (over ${formatBytes(MAX_SIZE_BYTES)})`);
       continue;
     }
     if (existingNames.has(f.name)) continue;
@@ -195,9 +205,9 @@ function validateAndQueue(files: File[]): void {
   }
 }
 
-// --- summary / button state ---
+// ---------- summary / button state ----------
 function renderSummary(): void {
-  const totals = queue.reduce(
+  const t = queue.reduce(
     (acc, q) => {
       acc.total++;
       acc.bytes += q.file.size;
@@ -208,34 +218,31 @@ function renderSummary(): void {
   );
 
   if (running) {
-    queueSummary.textContent =
-      `${totals.done}/${totals.total} done` +
-      (totals.error > 0 ? ` · ${totals.error} error${totals.error === 1 ? "" : "s"}` : "") +
-      ` · ${totals.running} running`;
-  } else if (totals.done === 0 && totals.error === 0) {
-    queueSummary.textContent = `${totals.total} file${totals.total === 1 ? "" : "s"} queued · ${formatBytes(totals.bytes)}`;
+    const bits = [`${t.done}/${t.total} fixed`];
+    if (t.error > 0) bits.push(`${t.error} didn't fix`);
+    if (t.running > 0) bits.push(`${t.running} in flight`);
+    queueSummary.textContent = bits.join(" · ");
+  } else if (t.done === 0 && t.error === 0) {
+    queueSummary.textContent = `${t.total} file${t.total === 1 ? "" : "s"} queued · ${formatBytes(t.bytes)}`;
+  } else if (t.done === t.total) {
+    queueSummary.textContent = `All ${t.total} fixed — your plumbobs are un-stuck ✨`;
   } else {
-    const parts = [`${totals.done} done`];
-    if (totals.error > 0) parts.push(`${totals.error} error${totals.error === 1 ? "" : "s"}`);
-    if (totals.queued > 0) parts.push(`${totals.queued} queued`);
-    queueSummary.textContent = parts.join(" · ");
+    const bits = [`${t.done} fixed`];
+    if (t.error > 0) bits.push(`${t.error} didn't fix`);
+    if (t.queued > 0) bits.push(`${t.queued} queued`);
+    queueSummary.textContent = bits.join(" · ");
   }
 
-  // Button visibility rules:
-  // - Start: shown whenever there's something to start or we're mid-run;
-  //   hidden only when the queue is fully settled with nothing left queued.
-  // - Download ZIP: shown as soon as any file completes successfully;
-  //   disabled during runs so the user doesn't zip a half-finished set.
-  // - Clear: always shown in the pane; disabled while running.
-  startButton.hidden = totals.queued === 0 && !running;
-  startButton.disabled = running || totals.queued === 0;
-  downloadZipBtn.hidden = totals.done === 0;
-  downloadZipBtn.disabled = running || totals.done === 0;
-  clearButton.disabled = running || totals.total === 0;
+  const hasQueued = t.queued > 0;
+  startButton.hidden = !hasQueued && !running;
+  startButton.disabled = running || !hasQueued;
+  startButton.textContent = t.queued === 1 && !running ? "Fix this one" : "Fix them all";
+  downloadZipBtn.hidden = t.done === 0;
+  downloadZipBtn.disabled = running || t.done === 0;
+  clearButton.disabled = running || t.total === 0;
 }
 
-// --- processing ---
-
+// ---------- processing ----------
 async function processOne(q: QueuedFile, template: Uint8Array, scale: number): Promise<void> {
   setCardState(q, "running");
   renderSummary();
@@ -249,15 +256,10 @@ async function processOne(q: QueuedFile, template: Uint8Array, scale: number): P
     setCardState(q, "error", (err as Error).message);
   } finally {
     renderSummary();
-    // Yield so DOM paints between files — keeps the tab responsive during
-    // large batches even though migratePackage itself is sync.
     await Promise.resolve();
   }
 }
 
-// Pull-based worker pool: each worker loops and takes the next queued item
-// off the live queue array until none remain. This handles files added or
-// retried *during* a run — they get picked up without restarting the run.
 async function runQueue(): Promise<void> {
   if (running) return;
   if (!queue.some((q) => q.state === "queued")) return;
@@ -268,7 +270,7 @@ async function runQueue(): Promise<void> {
     try {
       template = await activeTemplate();
     } catch (err) {
-      const msg = `template load failed: ${(err as Error).message}`;
+      const msg = `Template load failed: ${(err as Error).message}`;
       for (const q of queue) if (q.state === "queued") setCardState(q, "error", msg);
       return;
     }
@@ -283,10 +285,6 @@ async function runQueue(): Promise<void> {
         await processOne(q, template, scale);
       }
     };
-    // Always spawn CONCURRENCY workers, even if fewer items are queued
-    // right now: workers that find nothing exit immediately, but if the
-    // user adds more files mid-run, there's still a warm pool to handle
-    // them at full parallelism.
     await Promise.all(Array.from({ length: CONCURRENCY }, worker));
   } finally {
     running = false;
@@ -298,8 +296,6 @@ async function retryOne(q: QueuedFile): Promise<void> {
   if (q.state !== "error") return;
   setCardState(q, "queued");
   renderSummary();
-  // If a run is in flight, the pull-based worker loop will pick this item
-  // up on its next iteration — no need to start a new run.
   if (!running) await runQueue();
 }
 
@@ -311,7 +307,7 @@ function clearQueue(): void {
   renderSummary();
 }
 
-// --- downloads (semantics unchanged from previous impl) ---
+// ---------- downloads ----------
 function downloadFile(name: string, bytes: Uint8Array): void {
   const blob = new Blob([bytes as BlobPart], { type: "application/octet-stream" });
   const url = URL.createObjectURL(blob);
@@ -333,48 +329,14 @@ async function downloadAllAsZip(): Promise<void> {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "migrated_packages.zip";
+  a.download = "sims4_loading_screens.zip";
   document.body.appendChild(a);
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
-// --- event wiring ---
-pickButton.addEventListener("click", () => fileInput.click());
-fileInput.addEventListener("change", () => {
-  validateAndQueue(Array.from(fileInput.files ?? []));
-  fileInput.value = "";
-});
-
-startButton.addEventListener("click", () => void runQueue());
-clearButton.addEventListener("click", () => clearQueue());
-downloadZipBtn.addEventListener("click", () => void downloadAllAsZip());
-
-dropZone.addEventListener("dragenter", (e) => {
-  e.preventDefault();
-  dropZone.classList.add("hover");
-});
-dropZone.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  dropZone.classList.add("hover");
-});
-dropZone.addEventListener("dragleave", (e) => {
-  e.preventDefault();
-  dropZone.classList.remove("hover");
-});
-dropZone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  dropZone.classList.remove("hover");
-  validateAndQueue(Array.from(e.dataTransfer?.files ?? []));
-});
-
-// --- bonus: PNG → .package ---
-const pngInput = document.getElementById("png-input") as HTMLInputElement;
-const pngInstanceInput = document.getElementById("png-instance") as HTMLInputElement;
-const pngGenerate = document.getElementById("png-generate") as HTMLButtonElement;
-const pngStatus = document.getElementById("png-status") as HTMLElement;
-
+// ---------- PNG → .package (Make) ----------
 function setPngStatus(text: string, kind: "ok" | "err" | "info" = "info"): void {
   pngStatus.textContent = text;
   pngStatus.hidden = !text;
@@ -384,10 +346,21 @@ function setPngStatus(text: string, kind: "ok" | "err" | "info" = "info"): void 
 function parseInstanceHex(raw: string): bigint {
   const s = raw.trim().replace(/^0x/i, "");
   if (!/^[0-9a-f]{1,16}$/i.test(s)) {
-    throw new Error("instance must be 1–16 hex characters");
+    throw new Error("Instance ID should be 1–16 hex characters (0–9, a–f).");
   }
   return BigInt("0x" + s);
 }
+
+function currentInstance(): bigint {
+  if (pngSlot.value === "custom") return parseInstanceHex(pngInstanceInput.value);
+  return parseInstanceHex(pngSlot.value);
+}
+
+pngSlot.addEventListener("change", () => {
+  const isCustom = pngSlot.value === "custom";
+  pngInstanceField.classList.toggle("is-hidden", !isCustom);
+  if (isCustom) pngInstanceInput.focus();
+});
 
 pngInput.addEventListener("change", () => {
   pngGenerate.disabled = !(pngInput.files && pngInput.files.length > 0);
@@ -398,12 +371,12 @@ pngGenerate.addEventListener("click", async () => {
   const file = pngInput.files?.[0];
   if (!file) return;
   pngGenerate.disabled = true;
-  setPngStatus("reading image…", "info");
+  setPngStatus("Reading your image…", "info");
   try {
-    const instance = parseInstanceHex(pngInstanceInput.value);
+    const instance = currentInstance();
     const pngBytes = new Uint8Array(await file.arrayBuffer());
     const { width, height, bitmapBody } = await pngToBitmapBody(pngBytes);
-    setPngStatus(`encoded ${width}×${height} bitmap; building package…`, "info");
+    setPngStatus(`Encoded ${width} × ${height}. Building the package…`, "info");
     const template = await activeTemplate();
     const scale = Number.parseFloat(scaleInput.value) || 4.7985;
     const baseName = file.name.replace(/\.[^.]+$/, "") || "loading_screen";
@@ -414,24 +387,63 @@ pngGenerate.addEventListener("click", async () => {
     });
     downloadFile(outputName, packageBytes);
     setPngStatus(
-      `done — ${outputName} (${formatBytes(packageBytes.length)}). Drop it into your Mods folder.`,
+      `Done — ${outputName} (${formatBytes(packageBytes.length)}). Drop it into your Mods folder.`,
       "ok",
     );
   } catch (err) {
-    setPngStatus(`failed: ${(err as Error).message}`, "err");
+    setPngStatus(`Didn't work — ${(err as Error).message}`, "err");
   } finally {
     pngGenerate.disabled = !(pngInput.files && pngInput.files.length > 0);
   }
 });
 
-// Keyboard reachability: the dropzone is focusable and Enter/Space opens
-// the file picker, matching mouse-click behavior on the "pick files" button.
-dropZone.tabIndex = 0;
+// ---------- event wiring ----------
+// Label[for] opens the picker when clicked; but we also want explicit keyboard
+// reachability for the whole drop card.
+dropZone.setAttribute("tabindex", "0");
 dropZone.setAttribute("role", "button");
-dropZone.setAttribute("aria-label", "Drop .package files or press Enter to pick files");
+dropZone.setAttribute(
+  "aria-label",
+  "Drop or pick .package files to fix",
+);
 dropZone.addEventListener("keydown", (e) => {
   if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
     fileInput.click();
   }
 });
+
+pickButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  fileInput.click();
+});
+
+fileInput.addEventListener("change", () => {
+  validateAndQueue(Array.from(fileInput.files ?? []));
+  fileInput.value = "";
+});
+
+startButton.addEventListener("click", () => void runQueue());
+clearButton.addEventListener("click", () => clearQueue());
+downloadZipBtn.addEventListener("click", () => void downloadAllAsZip());
+
+// Drag state — listen on the drop zone for the visual hover state, on the
+// whole window to pick up the mascot animation even if the pointer is near
+// but not over the zone.
+function showOver(): void { dropZone.classList.add("is-over"); document.body.classList.add("is-dragging"); }
+function clearOver(): void { dropZone.classList.remove("is-over"); document.body.classList.remove("is-dragging"); }
+
+dropZone.addEventListener("dragenter", (e) => { e.preventDefault(); showOver(); });
+dropZone.addEventListener("dragover",  (e) => { e.preventDefault(); showOver(); });
+dropZone.addEventListener("dragleave", (e) => { e.preventDefault(); clearOver(); });
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  clearOver();
+  validateAndQueue(Array.from(e.dataTransfer?.files ?? []));
+});
+
+// Prevent the browser from navigating to a dropped file if the user misses
+// the drop zone entirely.
+window.addEventListener("dragover", (e) => e.preventDefault());
+window.addEventListener("drop", (e) => { e.preventDefault(); clearOver(); });

@@ -3,12 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sims 4 Loading Screen Migrator</title>
+    <title>Llama Plumbob Glitch Fixer · Sims 4 Loading Screen Fixer</title>
+    <meta name="description" content="Fixes the Sims 4 loading-screen glitch where the plumbob flickers into a llama mid-spin. Drop the broken .package and get a working copy back. Runs in your browser, no uploads." />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <main>
-      <nav class="repo-actions" aria-label="GitHub">
+    <a class="skip-link" href="#fix">Skip to fix tool</a>
+
+    <header class="site-header">
+      <a href="#fix" class="wordmark">
+        <span class="wordmark__title">Llama Plumbob Glitch Fixer</span>
+        <span class="wordmark__tag">Sims 4 Loading Screen Fixer</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a class="site-nav__link" href="#fix">Fix</a>
+        <a class="site-nav__link" href="#make">Make</a>
         <a
           id="gh-star"
           class="gh-star"
@@ -20,89 +30,158 @@
           <svg class="gh-star__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
             <path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
           </svg>
-          <span class="gh-star__label">Star on GitHub</span>
+          <span class="gh-star__label">Star</span>
           <span class="gh-star__count" id="gh-star-count" aria-live="polite"></span>
         </a>
       </nav>
-      <h1>Sims 4 Loading Screen Migrator</h1>
-      <p class="sub">
-        Fixes the <strong>llama loading-screen / spinning-plumbob glitch</strong>
-        caused by old custom loading-screen <code>.package</code> mods built
-        against an outdated GFX format.
-      </p>
-      <p class="sub">
-        <strong>What it does:</strong> for each file you drop, it extracts the
-        PNG bitmap (your loading-screen image) and re-embeds it into a current
-        <strong>GFX v15</strong> container, then writes a new DBPF with the
-        same instance ID. The image itself is copied byte-for-byte — only the
-        container around it is rebuilt. Everything runs locally in your
-        browser; nothing is uploaded.
-      </p>
+    </header>
 
-      <section id="drop" class="drop">
-        <input id="file-input" type="file" accept=".package" multiple hidden />
-        <p>Drop <code>.package</code> files here, or <button id="pick" type="button">pick files</button>.</p>
-        <p id="drop-message" class="drop-message" role="status" aria-live="polite" hidden></p>
+    <main>
+      <section id="fix" class="hero">
+        <div class="hero__grid">
+          <div class="hero__copy">
+            <p class="hero__eyebrow">The fix</p>
+            <h1 class="hero__title">
+              Your plumbob keeps
+              <span class="hero__title-accent">flickering into a llama?</span>
+            </h1>
+            <p class="hero__sub">
+              The Sims 4 loading-screen glitch where the spinning plumbob starts swapping frames with a llama head — and the game never finishes loading. Drop the broken <code>.package</code> here and you'll get a working copy back in seconds.
+              <strong>No uploads. No account.</strong>
+            </p>
+          </div>
+          <div class="hero__mascot" aria-hidden="true">
+            <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+              <!-- Ground shadow -->
+              <ellipse cx="110" cy="198" rx="72" ry="8" fill="currentColor" opacity="0.08"/>
+              <!-- Chimney -->
+              <rect x="154" y="42" width="20" height="34" rx="4" fill="var(--color-coral)"/>
+              <circle cx="164" cy="40" r="7" fill="var(--color-gold)"/>
+              <circle cx="160" cy="34" r="4" fill="var(--color-gold)" opacity="0.6"/>
+              <!-- Roof -->
+              <path d="M34 92 L110 40 L186 92 L186 108 L34 108 Z" fill="var(--color-coral)" stroke="var(--color-ink)" stroke-width="3" stroke-linejoin="round"/>
+              <!-- Body -->
+              <rect x="48" y="104" width="124" height="90" rx="8" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="3"/>
+              <!-- Window (left eye) -->
+              <rect x="64" y="120" width="26" height="26" rx="4" fill="var(--color-gold)" stroke="var(--color-ink)" stroke-width="2.5"/>
+              <line x1="77" y1="120" x2="77" y2="146" stroke="var(--color-ink)" stroke-width="2"/>
+              <line x1="64" y1="133" x2="90" y2="133" stroke="var(--color-ink)" stroke-width="2"/>
+              <!-- Window (right eye) -->
+              <rect x="130" y="120" width="26" height="26" rx="4" fill="var(--color-gold)" stroke="var(--color-ink)" stroke-width="2.5"/>
+              <line x1="143" y1="120" x2="143" y2="146" stroke="var(--color-ink)" stroke-width="2"/>
+              <line x1="130" y1="133" x2="156" y2="133" stroke="var(--color-ink)" stroke-width="2"/>
+              <!-- Door frame -->
+              <rect x="92" y="150" width="36" height="44" rx="4" fill="var(--color-ink)" opacity="0.12"/>
+              <!-- Door (ajar, rotated a few degrees) -->
+              <g transform="rotate(-18 92 194)" class="mascot__door">
+                <rect x="92" y="150" width="36" height="44" rx="4" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2.5"/>
+                <circle cx="121" cy="172" r="1.8" fill="var(--color-ink)"/>
+              </g>
+              <!-- Tiny plant flourish next to the door -->
+              <path d="M150 194 Q154 180 158 194" stroke="var(--color-leaf)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <path d="M154 192 Q152 184 150 182" stroke="var(--color-leaf)" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <!-- Cheeky smile between the windows -->
+              <path d="M96 164 Q110 170 124 164" stroke="var(--color-ink)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <label id="drop" class="drop" for="file-input">
+          <input id="file-input" type="file" accept=".package" multiple hidden />
+          <span class="drop__badge">Drop zone</span>
+          <span class="drop__title">Drop your broken <code>.package</code> files here</span>
+          <span class="drop__sub">or <button id="pick" type="button" class="drop__pick">pick them yourself</button></span>
+          <p id="drop-message" class="drop__msg" role="status" aria-live="polite" hidden></p>
+        </label>
       </section>
 
-      <details class="advanced">
-        <summary>Advanced</summary>
-        <label>
-          Override template GFX (optional):
-          <input id="template-input" type="file" accept=".gfx,.bin,.binary" />
-        </label>
-        <label>
-          Bitmap fill scale:
-          <input id="scale-input" type="number" value="4.7985" step="0.0001" min="1" max="8" />
-          <small>4.7985 matches shipped Sims4Studio fix packages. Raise for less black border, lower if image is cropped.</small>
-        </label>
-      </details>
-
-      <section id="queue-pane" class="queue-pane" hidden>
-        <div class="summary-bar">
-          <span id="queue-summary">0 files queued</span>
-          <div class="actions">
-            <button id="start" type="button" disabled>Start</button>
-            <button id="clear" type="button" disabled>Clear</button>
-            <button id="download-zip" type="button" hidden>Download all as ZIP</button>
+      <section id="queue-pane" class="queue-pane" hidden aria-live="polite" aria-atomic="false">
+        <div class="queue-pane__bar">
+          <div class="queue-pane__summary">
+            <span class="queue-pane__label">Your files</span>
+            <span id="queue-summary" class="queue-pane__count">0 files queued</span>
+          </div>
+          <div class="queue-pane__actions">
+            <button id="clear" class="btn btn--ghost" type="button" disabled>Clear</button>
+            <button id="start" class="btn btn--primary" type="button" disabled>Fix them all</button>
+            <button id="download-zip" class="btn btn--gold" type="button" hidden>Download all as ZIP</button>
           </div>
         </div>
         <ul id="file-queue" class="file-queue"></ul>
       </section>
 
-      <section class="bonus">
-        <details>
-          <summary><strong>Bonus: make a loading screen from any PNG</strong></summary>
-          <p class="bonus-desc">
-            Pick an image (PNG, JPEG, or WebP) and download a ready-to-drop
-            <code>.package</code> with that image as the loading-screen
-            background. By default the output replaces the Cottage Living
-            loading screen (instance <code>0x432D1D2ADDFFC6D8</code>); change
-            it below if you know the instance ID of a different screen you
-            want to target. Recommended image size is up to 2048×2048.
+      <section id="make" class="make">
+        <div class="make__intro">
+          <p class="make__eyebrow">While we're here</p>
+          <h2 class="make__title">Make a loading screen from your own image</h2>
+          <p class="make__sub">
+            PNG, JPEG, or WebP up to 2048 × 2048. Your image becomes the new
+            loading-screen background. Same in-browser process; nothing leaves your tab.
           </p>
-          <label class="bonus-field">
-            Image:
-            <input id="png-input" type="file" accept="image/png,image/jpeg,image/webp" />
-          </label>
-          <label class="bonus-field">
-            DBPF instance ID (hex):
-            <input id="png-instance" type="text" value="0x432D1D2ADDFFC6D8" spellcheck="false" />
-          </label>
-          <div class="bonus-actions">
-            <button id="png-generate" type="button" disabled>Generate .package</button>
-            <span id="png-status" class="bonus-status" hidden></span>
+        </div>
+        <div class="make__form">
+          <div class="field">
+            <label for="png-input" class="field__label">Image</label>
+            <input id="png-input" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="png-input-help" />
+            <p id="png-input-help" class="field__help">Tip: 16:9 or wider reads best on the loading screen.</p>
           </div>
-        </details>
+          <div class="field">
+            <label for="png-slot" class="field__label">Target loading screen</label>
+            <select id="png-slot">
+              <option value="0x432D1D2ADDFFC6D8" selected>Cottage Living — default loading screen</option>
+              <option value="custom">Custom instance ID…</option>
+            </select>
+          </div>
+          <div class="field is-hidden" id="png-instance-field">
+            <label for="png-instance" class="field__label">Instance ID (hex)</label>
+            <input id="png-instance" type="text" value="0x432D1D2ADDFFC6D8" spellcheck="false" autocomplete="off" aria-describedby="png-instance-help" />
+            <p id="png-instance-help" class="field__help">16 hex digits, with or without the <code>0x</code> prefix.</p>
+          </div>
+          <div class="make__actions">
+            <button id="png-generate" class="btn btn--gold" type="button" disabled>Generate the package</button>
+            <span id="png-status" class="make__status" hidden></span>
+          </div>
+        </div>
       </section>
+
+      <details class="advanced">
+        <summary>Advanced · template override &amp; fill scale</summary>
+        <div class="advanced__fields">
+          <div class="field">
+            <label for="template-input" class="field__label">Override template GFX (optional)</label>
+            <input id="template-input" type="file" accept=".gfx,.bin,.binary" aria-describedby="template-input-help" />
+            <p id="template-input-help" class="field__help">Only needed if the bundled template doesn't match your game version.</p>
+          </div>
+          <div class="field">
+            <label for="scale-input" class="field__label">Bitmap fill scale</label>
+            <input id="scale-input" type="number" value="4.7985" step="0.0001" min="1" max="8" aria-describedby="scale-input-help" />
+            <p id="scale-input-help" class="field__help">
+              4.7985 matches the shipped template. Raise for less black border, lower if the image is cropped.
+            </p>
+          </div>
+        </div>
+      </details>
     </main>
+
     <footer class="site-footer">
-      <span>build <a id="commit-link" href="https://github.com/KostaGorod/ts4-toolbox" target="_blank" rel="noopener"><code id="commit-sha">dev</code></a></span>
-      <span class="dot" aria-hidden="true">·</span>
-      <a href="./LICENSE" target="_blank" rel="noopener">MIT</a>
-      <span class="dot" aria-hidden="true">·</span>
-      <a href="https://github.com/KostaGorod/ts4-toolbox/issues/new" target="_blank" rel="noopener">Report issue</a>
+      <div class="site-footer__row">
+        <span class="site-footer__build">
+          built <a id="commit-link" href="https://github.com/KostaGorod/ts4-toolbox" target="_blank" rel="noopener"><code id="commit-sha">dev</code></a>
+        </span>
+        <span class="site-footer__dot" aria-hidden="true">·</span>
+        <a href="./LICENSE" target="_blank" rel="noopener">MIT</a>
+        <span class="site-footer__dot" aria-hidden="true">·</span>
+        <a href="https://github.com/KostaGorod/ts4-toolbox" target="_blank" rel="noopener">GitHub</a>
+        <span class="site-footer__dot" aria-hidden="true">·</span>
+        <a href="https://github.com/KostaGorod/ts4-toolbox/issues/new" target="_blank" rel="noopener">Report issue</a>
+        <span class="site-footer__dot" aria-hidden="true">·</span>
+        <span>by Kosta</span>
+      </div>
+      <p class="site-footer__disclaimer">
+        Fan tool. Not affiliated with Electronic Arts or Maxis.
+        <em>The Sims&nbsp;4</em> is a trademark of Electronic Arts Inc.
+      </p>
     </footer>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
